@@ -30,7 +30,6 @@ import logging
 
 import voluptuous as vol
 
-# Import the device class from the component that you want to support
 import homeassistant.util.color as color_util
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS, ATTR_RGB_COLOR,
@@ -39,7 +38,6 @@ from homeassistant.components.light import (
 from homeassistant.const import CONF_URL, CONF_USERNAME, CONF_PASSWORD, CONF_INCLUDE
 import homeassistant.helpers.config_validation as cv
 
-# Home Assistant depends on 3rd party packages for API specific code.
 REQUIREMENTS = ['zway==0.1']
 
 _LOGGER = logging.getLogger(__name__)
@@ -61,20 +59,20 @@ SUPPORT_ZWAY = {
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup Z-Way Light platform."""
-    from zway.controller import Controller
-    import zway.devices
 
-    zwc = Controller(baseurl=config.get(CONF_URL),
-                     username=config.get(CONF_USERNAME),
-                     password=config.get(CONF_PASSWORD))
+    import zway
+
+    zwc = zway.controller.Controller(baseurl=config.get(CONF_URL),
+                                     username=config.get(CONF_USERNAME),
+                                     password=config.get(CONF_PASSWORD))
 
     include = config.get(CONF_INCLUDE)
     devices = []
     for dev in zwc.devices:
         if dev.is_tagged(include):
             if (isinstance(dev, zway.devices.SwitchBinary) or
-                isinstance(dev, zway.devices.SwitchMultilevel) or
-                isinstance(dev, zway.devices.SwitchRGBW)):
+                    isinstance(dev, zway.devices.SwitchMultilevel) or
+                    isinstance(dev, zway.devices.SwitchRGBW)):
                 _LOGGER.info("Including %s %s: %s", dev.devicetype, dev.id, dev.title)
                 devices.append(ZWayLight(dev))
     add_devices(devices)
