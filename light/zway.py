@@ -38,7 +38,7 @@ from homeassistant.components.light import (
 from homeassistant.const import CONF_URL, CONF_USERNAME, CONF_PASSWORD, CONF_INCLUDE
 import homeassistant.helpers.config_validation as cv
 
-REQUIREMENTS = ['zway==0.1']
+REQUIREMENTS = ['zway==0.2']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -102,7 +102,7 @@ class ZWayLight(Light):
     @property
     def is_on(self):
         """Return true if light is on."""
-        return self._zlight.state
+        return self._zlight.on
 
     @property
     def brightness(self):
@@ -127,11 +127,11 @@ class ZWayLight(Light):
         elif self._zlight.devicetype == 'switchRGBW':
             self._zlight.rgb = tuple(kwargs.get(ATTR_RGB_COLOR))
         else:
-            self._zlight.state = True
+            self._zlight.on = True
 
     def turn_off(self, **kwargs):
         """Instruct the light to turn off."""
-        self._zlight.state = False
+        self._zlight.on = False
 
     def update(self):
         """Fetch new state data for this light.
