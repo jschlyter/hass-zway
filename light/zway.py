@@ -38,7 +38,7 @@ from homeassistant.components.light import (
 from homeassistant.const import CONF_URL, CONF_USERNAME, CONF_PASSWORD, CONF_INCLUDE
 import homeassistant.helpers.config_validation as cv
 
-REQUIREMENTS = ['zway==0.2']
+REQUIREMENTS = ['pyzway==0.2.0']
 
 _LOGGER = logging.getLogger(__name__)
 
