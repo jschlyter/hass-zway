@@ -32,13 +32,13 @@ import voluptuous as vol
 
 import homeassistant.util.color as color_util
 from homeassistant.components.light import (
-    ATTR_BRIGHTNESS, ATTR_RGB_COLOR,
+    ATTR_BRIGHTNESS, ATTR_HS_COLOR,
     SUPPORT_BRIGHTNESS, SUPPORT_COLOR,
     Light, PLATFORM_SCHEMA)
 from homeassistant.const import CONF_URL, CONF_USERNAME, CONF_PASSWORD, CONF_INCLUDE
 import homeassistant.helpers.config_validation as cv
+import homeassistant.util.color as color_util
 
-REQUIREMENTS = ['pyzway==0.2.0']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ SUPPORT_ZWAY = {
 }
 
 
-def setup_platform(hass, config, add_devices, discovery_info=None):
+def setup_platform(hass, config, add_entities, discovery_info=None):
     """Setup Z-Way Light platform."""
 
     import zway
@@ -75,7 +75,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                     isinstance(dev, zway.devices.SwitchRGBW)):
                 _LOGGER.info("Including %s %s: %s", dev.devicetype, dev.id, dev.title)
                 devices.append(ZWayLight(dev))
-    add_devices(devices)
+    add_entities(devices)
 
 
 class ZWayLight(Light):
@@ -125,7 +125,9 @@ class ZWayLight(Light):
         if self._zlight.devicetype == 'switchMultilevel':
             self._zlight.level = kwargs.get(ATTR_BRIGHTNESS, 255)
         elif self._zlight.devicetype == 'switchRGBW':
-            self._zlight.rgb = tuple(kwargs.get(ATTR_RGB_COLOR))
+            hs_color = kwargs.get(ATTR_HS_COLOR)
+            if hs_color:
+                self._zlight.rgb = color_util.color_hs_to_RGB(*hs_color)
             self._zlight.level = kwargs.get(ATTR_BRIGHTNESS, 255)
         else:
             self._zlight.on = True

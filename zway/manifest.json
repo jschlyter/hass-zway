@@ -1,0 +1,8 @@
+{
+  "domain": "zway",
+  "name": "Z-Way for Home Assistant",
+  "documentation": "https://github.com/jschlyter/hass-zway",
+  "requirements": ["pyzway==0.2.0"],
+  "dependencies": [],
+  "codeowners": ["@jschlyter"]
+}
